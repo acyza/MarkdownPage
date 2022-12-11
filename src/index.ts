@@ -1,6 +1,7 @@
 import { marked } from 'marked'
 import hljs from 'highlight.js'
 import katex from 'katex'
+import mlp from './global'
 import 'highlight.js/styles/github.css'
 import 'katex/dist/katex.css'
 
@@ -33,7 +34,7 @@ marked.use({
     link(href, title, text) {
       return `<a
         href="javascript:void(0)"
-        onclick="go('${href}')"
+        onclick="mlp.go('${href}')"
         ${title ? `title=${title}`:''}
       >${text}</a>`
     }
@@ -116,13 +117,11 @@ function go(path){
   if(/.*[?,=].*/.test(path))throw 'path error'
   history.pushState(undefined , '', `?path=${path}`)
   reflush()
-  location.search
 }
-window["go"] = go
+mlp.go = go
 
 /**刷新页面 */
 function reflush() {
-  
   renderMarkdown(query.path || "README.md")
 }
 
@@ -133,7 +132,6 @@ import './config.ts'
 export function load(){
   title = document.querySelector('title')
   content = document.querySelector('#content')
-  console.log(content)
   reflush()
 }
 

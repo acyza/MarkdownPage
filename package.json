@@ -1,6 +1,6 @@
 {
   "name": "markdown-load-page",
-  "version": "1.0.0-alpha",
+  "version": "1.0.1-alpha",
   "description": "静态HTML页面动态加载Markdown",
   "main": "index.js",
   "directories": {
@@ -8,7 +8,8 @@
   },
   "scripts": {
     "dev": "webpack --mode=development  --watch",
-    "build": "webpack --mode=production"
+    "build": "webpack --mode=production",
+    "test": "cd test & npm test"
   },
   "repository": {
     "type": "git",
@@ -23,6 +24,7 @@
   "dependencies": {
     "@types/katex": "^0.14.0",
     "@types/marked": "^4.0.7",
+    "axios": "^1.2.1",
     "css-loader": "^6.7.2",
     "highlight.js": "^11.7.0",
     "html-webpack-plugin": "^5.5.0",
