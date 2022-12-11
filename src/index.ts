@@ -106,19 +106,33 @@ const requestMarkdown = (() => {
  * @param {string} path markdown文件路径
  */
 function renderMarkdown(path){
+  mlp.current = path
+  let callback = {} as any;
+  window.dispatchEvent(new Event("loading"))
   requestMarkdown(path)
-  .then((value) => content && (content.innerHTML = marked.parse(value)))
-  .catch(console.log)
+  .then((value) => {
+    content && (content.innerHTML = marked.parse(value))
+    window.dispatchEvent(new Event("loaded"));
+  })
+  .catch((e)=>{
+    console.log(e)
+    window.dispatchEvent(new Event("loaderr"))
+  })
 }
 
 /**跳转 */
 function go(path){
   if (/^https?:\/\//.test(path))open(path, '_blank')
   if(/.*[?,=].*/.test(path))throw 'path error'
-  history.pushState(undefined , '', `?path=${path}`)
+  history.pushState(undefined , '', path ? `?path=${path}` : '')
   reflush()
 }
 mlp.go = go
+mlp.home = () => go(undefined)
+const onloadingCallback = [] as Array<(wait:Promise<void>)=>void>
+mlp.onLoading = (callback) => {
+  onloadingCallback.push(callback)
+}
 
 /**刷新页面 */
 function reflush() {
@@ -132,6 +146,15 @@ import './config.ts'
 export function load(){
   title = document.querySelector('title')
   content = document.querySelector('#content')
+  title.innerText = mlp.title
+  Object.defineProperty(mlp,"title",{
+    get(){
+      return title.innerHTML
+    },
+    set(value){
+      title.innerText = value
+    }
+  })
   reflush()
 }
 

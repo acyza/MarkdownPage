@@ -26,7 +26,12 @@ export interface ConfigTheme {
    */
   theme: string
 }
-
+export interface ConfigTitle {
+  /**
+   * 配置标题
+   */
+  title: string
+}
 function loadConfig(axios: Axios) {
   axios.get('config.json')
   .then((value) => {
@@ -35,7 +40,8 @@ function loadConfig(axios: Axios) {
     else
       throw `http status code = ${value.status}`
   })
-  .then((value: ConfigTemplate & Partial<ConfigTheme>)=>{
+  .then((value: ConfigTemplate & Partial<ConfigTheme & ConfigTitle>)=>{
+    if(value.title) mlp.title = value.title
     if(value.theme)
       loadConfig(new Axios({baseURL: `/theme/${value.theme}`}))
     else
@@ -53,6 +59,7 @@ import { loadPage } from './page'
 import { loadJs } from './loadjs'
 import { load } from '.'
 import { loadStyle } from './loadStyle'
+import mlp from './global'
 
 export async function config(config :ConfigTemplate, axios :Axios){
   await loadPage(config, axios)
