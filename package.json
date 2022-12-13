@@ -1,6 +1,6 @@
 {
   "name": "markdown-load-page",
-  "version": "1.0.18-alpha",
+  "version": "1.0.21-alpha",
   "description": "静态HTML页面动态加载Markdown",
   "main": "index.js",
   "directories": {

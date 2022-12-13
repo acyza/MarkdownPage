@@ -1,0 +1,26 @@
+on:
+  push:
+    branches: ["main"]
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          ref: main
+      - name: npm install
+        run: npm install
+      - name: backup dist
+        run: cp dist dist_back
+      - name: npm run build
+        run: npm run build
+      - name: check build
+        run: if ! diff -r dist dist_back; then exit -1; fi

@@ -48,7 +48,7 @@ marked.use({
     image(href, title, text) {
       return href === null ?
         text
-        :`<img src="${util.fillPath(href,util.folder('./doc/' + mlp.current))}"
+        :`<img src=".${util.fillPath(href,util.folder('doc/' + mlp.current))}"
           ${title?`title=${title}`:''}
           />`
     }
@@ -153,7 +153,7 @@ mlp.reflush = reflush
 
 /**刷新页面 */
 function reflush() {
-  renderMarkdown(query.path || "README.md")
+  renderMarkdown(query.path || "/README.md")
 }
 
 var title: HTMLTitleElement | undefined | null,content: HTMLElement | Element | undefined | null
