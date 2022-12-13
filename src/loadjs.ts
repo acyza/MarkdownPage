@@ -1,6 +1,6 @@
 import { ConfigTemplate } from './config'
 import { Axios } from 'axios'
-export function loadJs(config: ConfigTemplate,axios: Axios){console.log(config)
+export function loadJs(config: ConfigTemplate,axios: Axios){
   if(config.javascript)
     for(const name of config.javascript){
       const scriptDom = document.createElement('script')

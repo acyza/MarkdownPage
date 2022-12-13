@@ -1,4 +1,5 @@
 {
   "template":"index",
-  "style":["index"]
+  "style":["index"],
+  "javascript": ["index"]
 }

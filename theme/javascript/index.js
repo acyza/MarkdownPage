@@ -1,11 +1,13 @@
-const content = document.getElementById("content"),
-  loading = document.getElementById("loading");
-window.addEventListener("loading",()=>{
-  loading.style.visibility = "visable";
-  content.style.visibility = "hidden";
-})
+const doms = [document.getElementById("content"),
+  document.getElementById("loading"),
+  document.getElementById("error")
+];
 
-window.addEventListener("loaded",()=>{
-  loading.style.visibility = "hidden";
-  content.style.visibility = "visable";
-})
+let previous = undefined;
+mlp.onStatusChange((status) => {
+  if (status == previous) return;
+  if(previous == undefined) doms.forEach((val)=>val.style.display = 'none');
+  else doms[previous].style.display = 'none';
+  doms[status].style.display = '';
+  previous = status;
+}, true)

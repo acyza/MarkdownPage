@@ -1,10 +1,24 @@
+#!/usr/bin/env node
+
 const { existsSync } = require('fs')
-const { cp, readFile, opendir, writeFile } = require('fs/promises')
+const { cp, readFile, mkdir, opendir, writeFile } = require('fs/promises')
+const path = require('path')
+
+async function copy(src,dist){
+  await mkdir(path.dirname(dist),
+    {recursive: true})
+  await cp(src,dist,
+    {
+      recursive: true,
+      force: true
+    })
+}
 
 async function loadDefaultTheme(){
   console.log("copy default theme")
-  await writeFile("dist/config.json","{theme:\"default\"}")
-  cp(`${module.path}\\theme`, "dist\\theme")
+  await mkdir("dist",{recursive: true})
+  await writeFile("dist/config.json","{\"theme\":\"default\"}")
+  await copy(`${module.path}/theme`, "dist/theme/default")
 }
 
 async function isEmptyFolder(url) {
@@ -15,26 +29,27 @@ async function isEmptyFolder(url) {
 }
 
 const f = async () => {
-  if(!exitsSync("doc") || await isEmptyFolder("doc"))
+  if(!existsSync("doc") || await isEmptyFolder("doc"))
     return console.log("Please put the markdown document in the .//doc folder")
   else {
     console.log("copy doc folder")
-    cp("doc","dist\\doc")
+    copy("doc","dist/doc")
   }
-  await cp(`module.path\\dist`,".\\dist",{recursive:true})
+  await copy(`${module.path}/dist`,"./dist")
   if (existsSync("config.json")){
     const config = JSON.parse(
       await (await readFile("config.json"))
         .toString()
     )
+    copy("config.json","dist/config.json")
     if(config.theme) {
       console.log(`copy theme(${config.theme})`)
-      await cp(`theme\\${config.theme}`,`dist\\theme\\${config.theme}`)
+      await copy(`theme/${config.theme}`,`dist/theme/${config.theme}`)
     }else if(config.template){
-      const cpFolders = ['page','doc','javascript','style']
+      const cpFolders = ['page','javascript','style','doc']
       console.log("copy page template")
       for(const folder of cpFolders)
-        await cp(folder,`dist\\${folder}`)
+        await copy(folder,`dist/${folder}`)
     }else
     {
       console.error("config error")
@@ -44,8 +59,5 @@ const f = async () => {
     console.log("not fond config.json")
     loadDefaultTheme()
   }
-  for(const file of cpFiles)
-    if(existsSync(folder))
-      cp(file,`.\\dist\\${file}`,{recursive: true})
 }
 f()

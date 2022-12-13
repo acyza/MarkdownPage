@@ -6,15 +6,31 @@ body{
   display: flex;
   flex-direction: column;
 }
-#content {
-  flex-grow: 1;
-}
-#loading {
-  flex-grow: 1;
+#loading,#error {
   display: flex;
   justify-content: center;
   align-items: center;
 }
+
+#error {
+  font-size: 15pt;
+}
+
+#content,#loading,#error {
+  flex-grow: 1;
+  margin: 15px 60px;
+  padding: 0px 15px;
+  box-shadow: 5px 5px 3px 1px #c6c6c6;
+  background-color: #eaeaea;
+}
+
+.reflush {
+  width: 30px;
+  height: 30px;
+  margin-left: 6px;
+  cursor: pointer;
+}
+
 .loading {
   width: 50px;
   height: 50px;
@@ -23,7 +39,7 @@ body{
 
 .loading *{
   animation: loading 1s infinite;
-  stroke: red;
+  stroke: #f00;
   stroke-width: 8px;
   stroke-dashoffset: 60;
   stroke-dasharray: 0 282;

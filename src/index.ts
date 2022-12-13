@@ -1,13 +1,20 @@
-import { marked } from 'marked'
-import hljs from 'highlight.js'
-import katex from 'katex'
+/**marked 已由cdn引入，此类型引入只做代码提示 */
+import type { marked as _marked } from 'marked'
+/**katex 已由cdn引入，此类型引入只做代码提示 */
+import type _katex from 'katex'
 import mlp from './global'
-import 'highlight.js/styles/github.css'
-import 'katex/dist/katex.css'
+import util from './util'
+
+/** cdn 引入 highlight.js 获取hljs */
+const hljs = window["hljs"]
+/** cdn 引入 katex 获取 katex */
+const katex = window["ketex"] as typeof _katex
+/** cdn引入marked 获取marked */
+const marked = window["marked"] as typeof _marked
 
 /**marked 通过组件使用 katex 显示数学公式 */
 function mathExtension(level: 'block' | 'inline')
-  :marked.MarkedExtension["extensions"] extends (infer R)[] ? R : any
+  :_marked.MarkedExtension["extensions"] extends (infer R)[] ? R : any
 {
   const result = {
     name: `math_${level}`,
@@ -37,6 +44,13 @@ marked.use({
         onclick="mlp.go('${href}')"
         ${title ? `title=${title}`:''}
       >${text}</a>`
+    },
+    image(href, title, text) {
+      return href === null ?
+        text
+        :`<img src="${util.fillPath(href,util.folder('./doc/' + mlp.current))}"
+          ${title?`title=${title}`:''}
+          />`
     }
   }
 })
@@ -78,7 +92,7 @@ const requestMarkdown = (() => {
           callback.success && callback.success(this.responseText);
         break;
         default:
-          callback.error && callback.error();
+          callback.error && callback.error(this);
       }
       delete callback.error;
     }
@@ -95,7 +109,7 @@ const requestMarkdown = (() => {
     return new Promise<string>((success,err) => {
       callback.success = success;
       callback.error = err;
-      xhr.open('get', `/doc/${path}`)
+      xhr.open('get', `./doc/${path}`)
       xhr.send()
     })
   }
@@ -107,32 +121,35 @@ const requestMarkdown = (() => {
  */
 function renderMarkdown(path){
   mlp.current = path
-  let callback = {} as any;
+  mlp.status = 1
   window.dispatchEvent(new Event("loading"))
   requestMarkdown(path)
   .then((value) => {
     content && (content.innerHTML = marked.parse(value))
+    mlp.status = 0
+    mlp.title //刷新标题
     window.dispatchEvent(new Event("loaded"));
   })
   .catch((e)=>{
-    console.log(e)
+    console.error(e)
+    mlp.status = 2
     window.dispatchEvent(new Event("loaderr"))
   })
 }
 
 /**跳转 */
 function go(path){
-  if (/^https?:\/\//.test(path))open(path, '_blank')
+  if (/^https?:\/\//.test(path)) return open(path, '_blank')
   if(/.*[?,=].*/.test(path))throw 'path error'
-  history.pushState(undefined , '', path ? `?path=${path}` : '')
+  if(path) path = util.fillPath(path,util.folder(mlp.current))
+  else path = '/README.md'
+  if(path == mlp.current) return
+  history.pushState(undefined,'',`?path=${path}`)
   reflush()
 }
 mlp.go = go
-mlp.home = () => go(undefined)
-const onloadingCallback = [] as Array<(wait:Promise<void>)=>void>
-mlp.onLoading = (callback) => {
-  onloadingCallback.push(callback)
-}
+mlp.home = () => go("/README.md")
+mlp.reflush = reflush
 
 /**刷新页面 */
 function reflush() {
@@ -146,13 +163,15 @@ import './config.ts'
 export function load(){
   title = document.querySelector('title')
   content = document.querySelector('#content')
-  title.innerText = mlp.title
+  var _title = title.innerText = mlp.title
   Object.defineProperty(mlp,"title",{
     get(){
-      return title.innerHTML
+      return title.innerText = _title
+      || `${content.querySelector('h1')?.innerText || 'document'}-doc`
     },
     set(value){
-      title.innerText = value
+      _title = value
+      mlp.title //刷新标题
     }
   })
   reflush()

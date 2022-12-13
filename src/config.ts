@@ -43,7 +43,7 @@ function loadConfig(axios: Axios) {
   .then((value: ConfigTemplate & Partial<ConfigTheme & ConfigTitle>)=>{
     if(value.title) mlp.title = value.title
     if(value.theme)
-      loadConfig(new Axios({baseURL: `/theme/${value.theme}`}))
+      loadConfig(new Axios({baseURL: `${axios.defaults.baseURL}/theme/${value.theme}`}))
     else
       config(value || {}, axios)
   })
@@ -53,7 +53,7 @@ function loadConfig(axios: Axios) {
   })
 }
 
-window.addEventListener('load', () => loadConfig(new Axios({baseURL:"/"})))
+window.addEventListener('load', () => loadConfig(new Axios({baseURL:"./"})))
 
 import { loadPage } from './page'
 import { loadJs } from './loadjs'
