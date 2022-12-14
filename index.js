@@ -20,6 +20,7 @@ function getProcessArgs() {
       result[args[i-1].replace(/^-/,'')] = args[i]
     else throw 'args error -help'
   }
+  return result
 }
 
 const processArgs = getProcessArgs()
