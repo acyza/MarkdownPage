@@ -19,13 +19,6 @@ export interface ConfigTemplate {
      */
     javascript?: string[]
 }
-export interface ConfigTheme {
-  /**
-   * 配置主题
-   * 填写位于theme目录的文件夹名
-   */
-  theme: string
-}
 export interface ConfigTitle {
   /**
    * 配置标题
@@ -33,19 +26,16 @@ export interface ConfigTitle {
   title: string
 }
 function loadConfig(axios: Axios) {
-  axios.get('config.json')
+  axios.get('mlp-theme-config.json')
   .then((value) => {
     if(value.status == 200)
       return JSON.parse(value.data)
     else
       throw `http status code = ${value.status}`
   })
-  .then((value: ConfigTemplate & Partial<ConfigTheme & ConfigTitle>)=>{
+  .then((value: ConfigTemplate & Partial<ConfigTitle>)=>{
     if(value.title) mlp.title = value.title
-    if(value.theme)
-      loadConfig(new Axios({baseURL: `${axios.defaults.baseURL}/theme/${value.theme}`}))
-    else
-      config(value || {}, axios)
+    config(value || {}, axios)
   })
   .catch((e) => {
     console.error(`配置加载异常,加载默认配置\n${e}`)
@@ -53,7 +43,7 @@ function loadConfig(axios: Axios) {
   })
 }
 
-window.addEventListener('load', () => loadConfig(new Axios({baseURL:"./"})))
+window.addEventListener('load', () => loadConfig(new Axios({baseURL:"./theme"})))
 
 import { loadPage } from './page'
 import { loadJs } from './loadjs'

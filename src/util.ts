@@ -10,12 +10,26 @@ export function path(path:string){
 }
 
 export function fillPath(_path:string,base:string){
+  /**path http:// https://开头直接返回 */
   if(/^https?:\/\//.test(_path)) return _path
-  return path(
+
+  let result = path(
     /^[^\/|\\]/.test(_path) ?
       `${base}/${_path}`
       : _path
   )
+  while(true) {
+    const temp = result.split(/[^\/|\.]+\/\.\.\//)
+    result = temp.join('')
+    if(temp.length == 1) break
+  }
+  return result;
 }
 
-export default {path,folder,fillPath}
+export function suffix(path:string,suffix:string){
+  if(/\.[^\/|\\]*$/.test(path))return path
+  if(/[\/|\\]$/.test(path)) path = `${path}/index`
+  return `${path}${suffix}`
+}
+
+export default {path,folder,fillPath,suffix}

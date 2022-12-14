@@ -1,0 +1,5 @@
+{
+  "template":"page/",
+  "style":["style/"],
+  "javascript": ["javascript/"]
+}

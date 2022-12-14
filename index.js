@@ -1,8 +1,45 @@
 #!/usr/bin/env node
 
 const { existsSync } = require('fs')
-const { cp, readFile, mkdir, opendir, writeFile } = require('fs/promises')
+const { cp, readFile, mkdir, opendir } = require('fs/promises')
 const path = require('path')
+
+const config = {
+  theme: "",
+  doc: "doc"
+}
+
+function getProcessArgs() {
+  const result = {}
+  const args = process.argv
+  args[1] = '-doc'
+  for(let i=2;i<args.length;i++) {
+    if(/^-/.test(args[i]))
+      result[args[i].replace(/^-/,'')] ||= true
+    else if(/^-/.test(args[i-1]))
+      result[args[i-1].replace(/^-/,'')] = args[i]
+    else throw 'args error -help'
+  }
+}
+
+const processArgs = getProcessArgs()
+
+function margeConfig(dist,src){
+  for(let key in dist)
+    if(src[key]) dist[key] = src[key]
+}
+
+async function configInit() {
+  if(existsSync("mlp-config.json")){
+    const _config = 
+      JSON.parse(
+        (await readFile("mlp-config.json"))
+          .toString()
+      )
+    margeConfig(config,_config)
+  }
+  margeConfig(config,processArgs)
+}
 
 async function copy(src,dist){
   await mkdir(path.dirname(dist),
@@ -14,13 +51,6 @@ async function copy(src,dist){
     })
 }
 
-async function loadDefaultTheme(){
-  console.log("copy default theme")
-  await mkdir("dist",{recursive: true})
-  await writeFile("dist/config.json","{\"theme\":\"default\"}")
-  await copy(`${module.path}/theme`, "dist/theme/default")
-}
-
 async function isEmptyFolder(url) {
   const dir = await opendir(url)
   for await (const f of dir)
@@ -28,36 +58,38 @@ async function isEmptyFolder(url) {
   return true
 }
 
-const f = async () => {
-  if(!existsSync("doc") || await isEmptyFolder("doc"))
-    return console.log("Please put the markdown document in the .//doc folder")
+async function findTheme(name){
+  if(!name) return `${module.path}/theme`
+  if(/[^a-z|A-Z|-]/.test(name))throw 'theme name error\ntips:[a-z A-Z -]'
+  //要检查的文件夹顺序
+  const src = ['theme/','node_modules/','./']
+  for(let i=0;i<src.length;i++){
+    const path = src[i]+name
+    if(existsSync(path) && existsSync(path+"/"+"mlp-theme-config.json"))
+      return path
+  }
+  throw 'theme not fond'
+}
+
+const gen = async () => {
+  if(!existsSync(config.doc) || await isEmptyFolder(config.doc))
+    return console.log("Please put the markdown document in the .//doc folder or config document path")
   else {
     console.log("copy doc folder")
-    copy("doc","dist/doc")
+    copy(config.doc,"dist/doc")
   }
+  console.log("copy markdown-load-page files")
   await copy(`${module.path}/dist`,"./dist")
-  if (existsSync("config.json")){
-    const config = JSON.parse(
-      await (await readFile("config.json"))
-        .toString()
-    )
-    copy("config.json","dist/config.json")
-    if(config.theme) {
-      console.log(`copy theme(${config.theme})`)
-      await copy(`theme/${config.theme}`,`dist/theme/${config.theme}`)
-    }else if(config.template){
-      const cpFolders = ['page','javascript','style','doc']
-      console.log("copy page template")
-      for(const folder of cpFolders)
-        await copy(folder,`dist/${folder}`)
-    }else
-    {
-      console.error("config error")
-      process.exit(-1)
-    }
-  }else{
-    console.log("not fond config.json")
-    loadDefaultTheme()
-  }
+  console.log(`copy theme(${config.theme||'[default]'})`)
+  await copy(await findTheme(config.theme),`dist/theme`)
 }
-f()
+
+async function main() {
+  if(processArgs["-help"])
+    return console.log("-doc 指定markdown文档路径\n-theme 设置主题名称\n也可以把这些参数写入mlp-config.json文件中")
+  await configInit()
+  await gen()
+}
+
+main()
+.catch(console.error)

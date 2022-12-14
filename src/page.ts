@@ -1,11 +1,12 @@
 import { ConfigTemplate } from "./config";
-import { Axios } from 'axios'
+import { Axios } from 'axios';
+import util from "./util";
 
 export async function loadPage(config: ConfigTemplate, axios: Axios) {
   async function get(name: string){
     if (name == 'content') return '<div id="content"></div>'
     try {
-      return (await axios.get(`/page/${name}.html`)).data
+      return (await axios.get(util.suffix(name,".html"))).data
     }catch(e){
       return ''
     }
