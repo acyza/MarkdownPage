@@ -6,7 +6,7 @@ export function loadStyle(config: ConfigTemplate,axios: Axios){
     for(const url of config.style){
       const scriptDom = document.createElement('link')
       scriptDom.rel = "stylesheet"
-      scriptDom.href = util.fillPath(util.suffix(url,".css"),axios.defaults.baseURL)
+      scriptDom.href = "./"+util.fillPath(util.suffix(url,".css"),axios.defaults.baseURL)
       document.head.appendChild(scriptDom)
     }
 }
