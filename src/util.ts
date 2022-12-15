@@ -7,6 +7,7 @@ export function path(path:string){
   return ("/" + path.trim())
   .replace("\\","/")
   .replace(/\/+/g,"/")
+  .replace(/#.*$/,"")
 }
 
 export function fillPath(_path:string,base:string){

@@ -20,8 +20,8 @@ body{
   flex-grow: 1;
   margin: 15px 60px;
   padding: 0px 15px;
-  box-shadow: 5px 5px 3px 1px #c6c6c6;
-  background-color: #eaeaea;
+  box-shadow: 5px 5px 3px 1px #e3e3e3;
+  background-color: #f3f3f3;
 }
 
 .reflush {
@@ -62,31 +62,52 @@ body{
 .head{
   padding: 3px;
   display: flex;
-  background-color: #d6d6d6;
-  box-shadow: 3px 2px 7px 1px #999;
+  background-color: #fff;
+  box-shadow: 3px 2px 7px 1px #d7d7d7;
 }
 nav {
   display: inline-block;
 }
 
 .home-icon,.back-icon {
-  width: 50px;
-  height: 50px;
-  fill: #7d7d7d;
+  width: 25px;
+  height: 25px;
+  fill: #000;
   cursor: pointer;
+}
+
+.github-link {
+  fill: #fff;
+  width:50px;
+  height:50px;
+  position: absolute;
+  right: 0px;
+  top: 9px;
+}
+
+#github-link {
+  position: absolute;
+  right: 0px;
+  top: 0px;
+  width: 100px;
+  height: 100px;
+  cursor: pointer;
+  background-color: #000;
+  clip-path: polygon(0 0,100% 0,100% 100%);
 }
 
 .split {
   width: 2px;
-  margin: 5px 5px 5px 3px;
-  background-color: #b6b6b6;
+  margin: 2px 5px 5px 3px;
+  background-color: #d5d5d5;
   display: inline-block;
 }
 .foot {
-  background-color: #b6b6b6;
+  background-color: #fff;
   position: relative;
   text-align: center;
   padding: 6px;
+  box-shadow: 1px -2px 10px 2px #eaeaea;
 }
 .github-icon {
   top:8px;
@@ -94,4 +115,10 @@ nav {
   width: 20px;
   height: 20px;
   position: absolute;
+}
+
+/**markdown*/
+
+img {
+  max-width: 100%;/**防止图片过大跑出框外*/
 }

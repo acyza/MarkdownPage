@@ -128,6 +128,9 @@ function renderMarkdown(path){
     content && (content.innerHTML = marked.parse(value))
     mlp.status = 0
     mlp.title //刷新标题
+    const position = query.position
+    if(position)
+      window.scroll(0, document.getElementById(position)?.offsetTop) //重新定位
     window.dispatchEvent(new Event("loaded"));
   })
   .catch((e)=>{
@@ -138,13 +141,15 @@ function renderMarkdown(path){
 }
 
 /**跳转 */
-function go(path){
+function go(path: string){
   if (/^https?:\/\//.test(path)) return open(path, '_blank')
   if(/.*[?,=].*/.test(path))throw 'path error'
+  const position = 
+    /.*#.*/.test(path) ? path.replace(/.*#/,'') : ''
   if(path) path = util.fillPath(path,util.folder(mlp.current))
   else path = '/README.md'
   if(path == mlp.current) return
-  history.pushState(undefined,'',`?path=${path}`)
+  history.pushState(undefined,'',`?path=${path}&position=${position}`)
   reflush()
 }
 mlp.go = go
