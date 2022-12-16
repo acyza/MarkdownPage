@@ -48,7 +48,7 @@ marked.use({
     image(href, title, text) {
       return href === null ?
         text
-        :`<img src=".${util.fillPath(href,util.folder('./doc/' + mlp.current))}"
+        :`<img src="${util.fillPath(href,util.folder('./doc/' + mlp.current))}"
           ${title?`title=${title}`:''}
           />`
     }
