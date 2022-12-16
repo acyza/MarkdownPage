@@ -70,18 +70,15 @@ nav {
 }
 
 .home-icon,.back-icon {
-  width: 25px;
-  height: 25px;
-  fill: #000;
+  font-size: 15pt;
+  color: #000;
   cursor: pointer;
 }
 
 .github-link {
-  fill: #fff;
-  width:50px;
-  height:50px;
+  font-size: 25pt;
   position: absolute;
-  right: 0px;
+  right: 9px;
   top: 9px;
 }
 
@@ -92,15 +89,18 @@ nav {
   width: 100px;
   height: 100px;
   cursor: pointer;
-  background-color: #000;
+  background-color: #00000073;
   clip-path: polygon(0 0,100% 0,100% 100%);
 }
 
 .split {
   width: 2px;
-  margin: 2px 5px 5px 3px;
+  margin: 2px 5px 2px 3px;
   background-color: #d5d5d5;
   display: inline-block;
+}
+.foot>a{
+  color: #000;
 }
 .foot {
   background-color: #fff;

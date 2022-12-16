@@ -4,7 +4,7 @@ export function folder(path:string) {
 }
 
 export function path(path:string){
-  return ("/" + path.trim())
+  return path.trim()
   .replace("\\","/")
   .replace(/\/+/g,"/")
   .replace(/#.*$/,"")

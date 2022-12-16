@@ -20,7 +20,7 @@ jobs:
       - name: npm init
         run: npm init -y
       - name: npm install
-        run: npm install markdown-load-page@1.1.7-alpha
+        run: npm install markdown-load-page@1.1.11-alpha
       - name: npx mlp
         run: npx mlp
       - name: Setup pages
