@@ -94,7 +94,7 @@ button:active {
 }
 
 #github-link {
-  position: absolute;
+  position: fixed;
   right: 0px;
   top: 0px;
   width: 100px;
@@ -104,12 +104,6 @@ button:active {
   clip-path: polygon(0 0,100% 0,100% 100%);
 }
 
-.split {
-  width: 2px;
-  margin: 2px 5px 2px 3px;
-  background-color: #d5d5d5;
-  display: inline-block;
-}
 .foot>a{
   color: #000;
 }
