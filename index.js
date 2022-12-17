@@ -3,6 +3,7 @@
 const { existsSync } = require('fs')
 const { cp, readFile, mkdir, opendir } = require('fs/promises')
 const path = require('path')
+const http = require('http')
 
 const config = {
   theme: "",
@@ -90,6 +91,22 @@ async function main() {
     return console.log("-doc 指定markdown文档路径\n-theme 设置主题名称\n也可以把这些参数写入mlp-config.json文件中")
   await configInit()
   await gen()
+  if(processArgs["perview"]){
+    const server = new http.Server(async(req,res)=>{
+      if(!new RegExp(`^${process.cwd}/dist/.*`).test(path.normalize(req.url))){
+        req.statusCode = 500
+        res.write("error")
+        return res.end()
+      }
+      if(req.url && existsSync("./dist/"+req.url)){
+        res.write((await readFile(/\/$/.test(req.url) ? req.url+"/index.html":req.url)).toString())
+      }else{
+        res.write("404 not found")
+      }
+      res.end()
+    })
+    server.listen(8080)
+  }
 }
 
 main()

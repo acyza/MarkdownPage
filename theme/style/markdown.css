@@ -1,0 +1,21 @@
+.content blockquote {
+  border-left: 3px solid #8b8b8b;
+  margin-left: 0px;
+  padding-left: 20px;
+  color: #8b8b8b;
+}
+
+.content h1,h2,h3,h4,h5,h6 {
+  border-bottom: 1px solid #d5d5d5;
+  padding-bottom: 7px;
+}
+
+.content code {
+  background-color: #e3e3e3;
+  padding: 10px;
+  display: block;
+}
+
+.content img {
+  max-width: 100%;
+}
