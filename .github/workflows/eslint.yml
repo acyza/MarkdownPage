@@ -12,4 +12,4 @@ jobs:
       - name: npm install
         run: npm install
       - name: check
-        run: npx eslint -c .eslintrc.json *
+        run: npx eslint -c .eslintrc.json * --no-error-on-unmatched-pattern
